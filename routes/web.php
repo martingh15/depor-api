@@ -14,9 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
 Route::resource('/jugadores', 'JugadorController');
 Route::resource('/partidos', 'PartidoController');
 Route::resource('/registro','UsuarioController');
 Route::post("/loginWeb", 'LoginController@loginWeb');
-
