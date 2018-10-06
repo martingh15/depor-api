@@ -11,10 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['middleware' => 'auth.jwt'], function () {
+    Route::resource('/jugadores', 'JugadorController');
 });
-Route::resource('/jugadores', 'JugadorController');
+
 Route::resource('/partidos', 'PartidoController');
-Route::resource('/registro','UsuarioController');
+Route::resource('/usuarios','UsuarioController');
 Route::post("/loginWeb", 'LoginController@loginWeb');

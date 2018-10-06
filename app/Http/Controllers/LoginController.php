@@ -25,11 +25,11 @@ class LoginController extends Controller
     public function loginWeb(Request $request)
     {
         // credenciales para loguear al usuario
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('nombreUsuario', 'password');
 
         try {
             //Busco por mail
-            $user = Usuario::where("email", $credentials['email'])->first();
+            $user = Usuario::where("nombreUsuario", $credentials['nombreUsuario'])->first();
             if (empty($user)) {
                 return Response::json(array(
                     'code' => 500,
@@ -44,64 +44,7 @@ class LoginController extends Controller
                 ), 500);
             }
             //Genero token
-            $token = JWTAuth::fromUser($user, ['idUsuario' => $user->id, 'nombre' => $user->nombre]);
-            //Si hubo problema con token
-            if (!$token) {
-                return response()->json(['error' => 'invalid_credentials'], 401);
-            }
-        } catch (JWTException $e) {
-            // si no se puede crear el token
-            return response()->json(['error' => 'could_not_create_token'], 500);
-        }
-        return response()->json(compact('token'))->header('Access-Control-Allow-Origin', '*');
-
-    }
-
-    public function loginMon(Request $request)
-    {
-        // credenciales para loguear al usuario
-        $credentials = $request->only('email', 'password');
-
-        try {
-            //Busco por mail
-            $user = Usuario::where("email", $credentials['email'])->first();
-            if (empty($user)) {
-                //Busco por tarjeta
-                $user = Usuario::where([["tarjeta", $credentials['email']]])->first();
-            }
-            if (empty($user)) {
-                return Response::json(array(
-                    'code' => 500,
-                    'message' => "Usuario y/o contraseña incorrectos."
-                ), 500);
-            }
-            //Me fijo si esta habilitado
-            if ($user->estado == 0) {
-                return Response::json(array(
-                    'code' => 500,
-                    'message' => "Su usuario no ha sido habilitado aún. Aguarde la habilitación o contáctese con nosotros."
-                ), 500);
-            }
-            if ($user->idRol != config('constants.IDSROLES.ID_ADMINISTRACION') &&
-                $user->idRol != config('constants.IDSROLES.ID_DESPACHO') &&
-                $user->idRol != config('constants.IDSROLES.ID_VENDEDOR') &&
-                $user->idRol != config('constants.IDSROLES.ID_COMMUNITY_MANAGER') &&
-                $user->idRol != config('constants.IDSROLES.ID_ADMINISTRADOR')) {
-                return Response::json(array(
-                    'code' => 500,
-                    'message' => "No posee permisos para ingresar al sistema"
-                ), 500);
-            }
-            //Verifico password
-            if (!Hash::check($credentials['password'], $user->password)) {
-                return Response::json(array(
-                    'code' => 500,
-                    'message' => "Usuario y/o contraseña incorrectos."
-                ), 500);
-            }
-            $rol = Rol::find($user->idRol);
-            //Genero token
-            $token = JWTAuth::fromUser($user, ['rol' => !empty($rol) ? $rol->desRol : "", 'idRol' => $user->idRol, 'nombre' => $user->nombre . " " . $user->apellido, 'id' => uniqid()]);
+            $token = JWTAuth::attempt($credentials);
             //Si hubo problema con token
             if (!$token) {
                 return response()->json(['error' => 'invalid_credentials'], 401);
