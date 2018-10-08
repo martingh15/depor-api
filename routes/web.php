@@ -13,8 +13,11 @@
 
 Route::group(['middleware' => 'auth.jwt'], function () {
     Route::resource('/jugadores', 'JugadorController');
+    Route::resource('/partidos', 'PartidoController');
+    Route::resource('/usuarios', 'UsuarioController');
+
 });
 
-Route::resource('/partidos', 'PartidoController');
-Route::resource('/usuarios','UsuarioController');
+Route::get('/allJugadores', 'JugadorController@getAll');
+Route::get('/allPartidos', 'PartidoController@getAll');
 Route::post("/loginWeb", 'LoginController@loginWeb');
