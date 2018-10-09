@@ -10,5 +10,5 @@ class Partido extends Model
     protected $table = 'partidos';
 
     /* Add the fillable property into the Product Model */
-    protected $fillable = ['nro_partido', 'descripcion', 'fecha', 'rival', 'goles_a_favor', 'goles_en_contra'];
+    protected $fillable = ['nro_partido', 'descripcion', 'fecha', 'rival', 'goles_a_favor', 'goles_en_contra','idTorneo'];
 }

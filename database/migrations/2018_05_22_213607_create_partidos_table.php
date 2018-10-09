@@ -21,6 +21,7 @@ class CreatePartidosTable extends Migration
             $table->string('rival');
             $table->bigInteger('goles_a_favor');
             $table->bigInteger('goles_en_contra');
+            $table->bigInteger('idTorneo');
             $table->timestamps();
         });
     }

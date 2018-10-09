@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Jugador;
+use Response;
 
 class JugadorController extends Controller
 {
@@ -14,6 +15,21 @@ class JugadorController extends Controller
         return Jugador::all();
     }
 
+    public function getOne($nro_camiseta)
+    {
+        $jugador = Jugador::where('nro_camiseta',$nro_camiseta)->first();
+
+        if (empty($jugador)) {
+            return Response::json(array(
+                'code' => 500,
+                'message' => 'No existe ese jugador'
+            ), 500);
+        }
+
+        return $jugador;
+
+
+    }
     public function getAll()
     {
         return Jugador::all();
@@ -30,21 +46,23 @@ class JugadorController extends Controller
         $jugador = new Jugador;
 
         $jugador->nombre = $request->nombre;
-        $jugador->numero_camiseta = $request->numero_camiseta;
+        $jugador->nro_camiseta = $request->nro_camiseta;
         $jugador->fecha_nacimiento = $request->fecha_nacimiento;
-        $jugador->cantidad_goles = $request->cantidad_goles;
-        $jugador->cantidad_asistencias = $request->cantidad_asistencias;
+        $jugador->cantidad_goles = 0;
+        $jugador->cantidad_asistencias = 0;
+        $jugador->posicion = $request->posicion;
         $jugador->apodo = $request->apodo;
-        
 
-        $jugador->save();
+        $jugadorDuplicado = Jugador::where('nro_camiseta',$request->nro_camiseta)->first();
 
-        if (!empty($jugador->errors())) {
+        if (!empty($jugadorDuplicado)) {
             return Response::json(array(
                 'code' => 500,
-                'message' => $jugador->errors()
+                'message' => 'El jugador con ese numero de camiseta ya existe, es: ' . $jugadorDuplicado->nombre
             ), 500);
         }
+
+        $jugador->save();
 
         return $jugador;
     }
@@ -60,15 +78,26 @@ class JugadorController extends Controller
         \Log::info('edit');
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $nro_camiseta)
     {
         \Log::info('update');
-        \Log::info($request);
+        $jugador = Jugador::where('nro_camiseta', $nro_camiseta)->first();
+        $jugador->nombre = $request->nombre;
+        $jugador->nro_camiseta = $request->nro_camiseta;
+        $jugador->fecha_nacimiento = $request->fecha_nacimiento;
+        $jugador->posicion = $request->posicion;
+        $jugador->apodo = $request->apodo;
+        $jugador->save();
+
+        return $jugador;
     }
 
 
-    public function destroy($id)
+    public function destroy($nro_camiseta)
     {
-        \Log::info('destroy');
+        $jugador = Jugador::where('nro_camiseta',$nro_camiseta)->first();
+        $jugador->delete();
+
+        return 'Jugador con camiseta ' . $nro_camiseta .' borrado';
     }
 }
