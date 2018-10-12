@@ -10,5 +10,10 @@ class Torneo extends Model
     protected $table = 'torneos';
 
     /* Add the fillable property into the Product Model */
-    protected $fillable = ['id', 'fechaTorneo', 'descripcionTorneo'];
+    protected $fillable = ['id', 'fechaTorneo', 'descripcionTorneo','lugar'];
+
+    public function partido()
+    {
+        return $this->hasMany('App\Partido',"idTorneo","id");
+    }
 }

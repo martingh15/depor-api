@@ -23,3 +23,5 @@ Route::post("/loginWeb", 'LoginController@loginWeb');
 Route::get('/allJugadores', 'JugadorController@getAll');
 Route::get('/allPartidos', 'PartidoController@getAll');
 Route::get('/allTorneos','TorneoController@getAll');
+Route::get('torneo/{idTorneo}', 'TorneoController@getOne');
+
