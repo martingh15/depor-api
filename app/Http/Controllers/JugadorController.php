@@ -12,6 +12,9 @@ class JugadorController extends Controller
     public function index()
     {
         \Log::info('index');
+
+        $jugador = Jugador::where('id',7)->whit('Asistencia')->first();
+        \Log::info($jugador);
         return Jugador::all();
     }
 
@@ -25,6 +28,8 @@ class JugadorController extends Controller
                 'message' => 'No existe ese jugador'
             ), 500);
         }
+
+        \Log::info('hola');
 
         return $jugador;
 

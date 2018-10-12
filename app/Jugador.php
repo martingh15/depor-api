@@ -11,4 +11,9 @@ class Jugador extends Model
 
     /* Add the fillable property into the Product Model */ 
     protected $fillable = ['nro_camiseta', 'nombre', 'cantidad_goles', 'cantidad_asistencias','fecha_nacimiento','apodo','posicion'];
+
+    public function asistencia()
+    {
+        return $this->hasMany('App\Asistencia',"idJugador","nro_camiseta");
+    }
 }
